@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+.btn-primary, .btn-primary:active, .btn-primary:focus {
+    -webkit-tap-highlight-color:#217346;
+    background-color: #217346 !important;
+    border: solid 2px #21A366 !important;
+}
+.btn-primary:hover {
+    background-color: #21a367 !important;
+    border: solid 2px #217346 !important;
+}

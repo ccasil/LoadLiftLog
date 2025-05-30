@@ -1,0 +1,84 @@
+<div class="startcomponent row g-0 d-flex flex-column justify-content-center align-items-center py-3">
+  <div class="col-11 col-sm-10 col-md-6 col-lg-5 col-xl-4 p-0 shadow bg-white bg-gradient rounded-5 p-5 my-auto">
+    <div class="text-center">
+      <h1 class="h1 m-0 fw-bold">Load & Log</h1>
+    </div>
+    <div class="d-flex justify-content-center w-100">
+      <hr class="w-50">
+    </div>
+    <div class="container mt-2">
+      <button class="btn btn-primary btn-lg rounded-4 w-100" type="button">Upload Data</button>
+      <button class="btn btn-primary btn-lg rounded-4 w-100 mt-2" type="button" data-bs-toggle="modal"
+        data-bs-target="#newUserModal">New User</button>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="newUserModal" tabindex="-1" aria-labelledby="newUserModalLabel" aria-hidden="true" #modalRef>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="newUserModalLabel">Start Your Profile</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <p><span class="text-danger">*</span> Required</p>
+          <div class="mb-3">
+            <label for="firstname" class="form-label"><span class="text-danger">*</span> First Name</label>
+            <input type="email" class="form-control" id="firstname" aria-describedby="firstname"[(ngModel)]="firstName" name="firstName">
+          </div>
+          <div class="mb-3">
+            <label for="lastname" class="form-label"><span class="text-danger">*</span> Last Name</label>
+            <input type="email" class="form-control" id="lastname" aria-describedby="lastname"[(ngModel)]="lastName" name="lastName">
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label"><span class="text-danger">*</span> Email address</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp"[(ngModel)]="email" name="email">
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+          </div>
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#weightCollapse"
+            aria-expanded="false" aria-controls="weightCollapse">
+            Optional Weight Goals
+          </button>
+          <div class="collapse" id="weightCollapse">
+            <div class="card card-body mt-3">
+              <div class="mb-3">
+                <label for="currentweight" class="form-label">Current Weight</label>
+                <input type="email" class="form-control" id="currentweight" aria-describedby="currentweight"[(ngModel)]="currentWeight" name="currentWeight">
+              </div>
+              <div class="mb-3">
+                <label for="goalweight" class="form-label">Goal Weight</label>
+                <input type="email" class="form-control" id="goalweight" aria-describedby="goalweight"[(ngModel)]="goalWeight" name="goalWeight">
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#strengthCollapse"
+            aria-expanded="false" aria-controls="strengthCollapse">
+            Optional Strength Goals
+          </button>
+          <div class="collapse" id="strengthCollapse">
+            <div class="card card-body mt-3">
+              <div class="mb-3">
+                <label for="squatGoal" class="form-label">Squat Goal</label>
+                <input type="email" class="form-control" id="squatGoal" aria-describedby="squatGoal"[(ngModel)]="squatGoal" name="squatGoal">
+              </div>
+              <div class="mb-3">
+                <label for="benchGoal" class="form-label">Bench Goal</label>
+                <input type="email" class="form-control" id="benchGoal" aria-describedby="benchGoal"[(ngModel)]="benchGoal" name="benchGoal">
+              </div>
+              <div class="mb-3">
+                <label for="deadliftGoal" class="form-label">Deadlift Goal</label>
+                <input type="email" class="form-control" id="deadliftGoal" aria-describedby="deadliftGoal"[(ngModel)]="deadliftGoal" name="deadliftGoal">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="newUser();">Lets Log Lifts!</button>
+      </div>
+    </div>
+  </div>
+</div>
