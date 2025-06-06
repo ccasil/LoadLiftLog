@@ -1,22 +1,45 @@
-<div class="container-fluid pt-4">
-  <button *ngIf="!workoutStarted" class="btn btn-primary btn-lg rounded-4 w-100" type="button" data-bs-toggle="modal"
+<div class="container-fluid pt-4 mb-4">
+  <button *ngIf="!workoutStarted && !todaysLog" class="btn btn-primary btn-lg rounded-4 w-100" type="button" data-bs-toggle="modal"
     data-bs-target="#workoutModal">Start Workout</button>
-  <button *ngIf="workoutStarted" class="btn btn-primary btn-lg rounded-4 w-100 mt-2" type="button" data-bs-toggle="modal"
-    data-bs-target="#newUserModal">Add Exercise</button>
-  <button *ngIf="workoutStarted" class="btn btn-primary btn-lg rounded-4 w-100 mt-2" type="button">Save Data (Overwrite)</button>
-
-  <div *ngIf="workoutStarted" class="border border-3 rounded-4 p-4 mt-2">
+  <button *ngIf="workoutStarted || todaysLog?.workout == true" class="btn btn-primary btn-lg rounded-4 w-100 mt-2" type="button"
+    data-bs-toggle="modal" data-bs-target="#newExerciseModal">Add Exercise</button>
+  <button *ngIf="workoutStarted || todaysLog?.workout == true" class="btn btn-primary btn-lg rounded-4 w-100 mt-2" type="button">Save Data
+    (Overwrite)</button>
+  <div *ngIf="workoutStarted || todaysLog?.workout == true" class="border border-3 rounded-4 p-4 mt-2">
     <h1 class="h1">Today's Workout</h1>
-    <h2 class="h2">Focus: {{focusGroup}}</h2>
+    <h2 class="h2">Focus: {{todaysLog.traininggroup}}</h2>
     <div class="table-responsive">
       <table class="table">
-        
+        <thead>
+          <tr>
+            <th scope="col">Exercise</th>
+            <th scope="col">Type</th>
+            <th scope="col">Sets</th>
+            <th scope="col">Reps</th>
+            <th scope="col">Weight ({{_userService.user.unit}})</th>
+            <th scope="col">RPE</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let exercise of todaysLog?.exercises">
+            <td>{{ exercise.name }}</td>
+            <td>{{ exercise.type }}</td>
+            <td>{{ exercise.sets }}</td>
+            <td>{{ exercise.reps }}</td>
+            <td>{{ exercise.weight }}</td>
+            <td>{{ exercise.rpe }}</td>
+            <td>{{ exercise.notes }}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
-
-
   </div>
 </div>
+
+  <pre>
+    {{ _userService.user | json }}
+  </pre>
 <!-- Modal -->
 <div class="modal fade" id="workoutModal" tabindex="-1" aria-labelledby="workoutModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -25,36 +48,83 @@
         <form>
           <h2 class="text-center mb-2">Today's Focus</h2>
           <div *ngFor="let group of trainingGroups; let i = index" class="form-check">
-            <input class="form-check-input" type="radio" name="focusGroup" [id]="'radioDefault' + i"[(ngModel)]="focusGroup"[value]="group">
-            <label class="form-check-label" [for]="'radioDefault' + i">
-              {{group }}
+            <input class="form-check-input" type="checkbox" [id]="'checkbox' + i" [value]="group"
+              (change)="onGroupToggle(group, $event.target)" [checked]="selectedGroups.includes(group)" />
+            <label class="form-check-label" [for]="'checkbox' + i">
+              {{ group }}
             </label>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" (click)="startWorkout();" [disabled]="focusGroup == ''" data-bs-dismiss="modal" aria-label="Close">Start Workout</button>
+        <button type="button" class="btn btn-primary" (click)="startWorkout();" [disabled]="selectedGroups.length === 0"
+          data-bs-dismiss="modal" aria-label="Close">Start Workout</button>
       </div>
     </div>
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="newUserModal" tabindex="-1" aria-labelledby="newUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="newExerciseModal" tabindex="-1" aria-labelledby="newExerciseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <!-- <div class="modal-header">
-        <h1 class="modal-title fs-5" id="newUserModalLabel">Modal title</h1>
+        <h1 class="modal-title fs-5" id="newExerciseModalLabel">Modal title</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div> -->
       <div class="modal-body">
         <form>
-
+          <h2 class="text-center mb-2">Add Exercise</h2>
+          <div class="mb-3">
+            <label for="exerciseName" class="form-label">Exercise Name</label>
+            <input type="text" class="form-control" id="exerciseName" [(ngModel)]="newExercise.name"
+              name="exerciseName">
+          </div>
+          <div class="mb-3">
+            <label for="exerciseType" class="form-label">Exercise Type</label>
+            <select class="form-select" id="exerciseType" [(ngModel)]="newExercise.type" name="exerciseType">
+              <option *ngFor="let type of exerciseTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="exerciseSets" class="form-label">Sets</label>
+            <input type="number" class="form-control" id="exerciseSets" [(ngModel)]="newExercise.sets"
+              name="exerciseSets">
+          </div>
+          <div class="mb-3">
+            <label for="exerciseReps" class="form-label">Reps</label>
+            <input type="number" class="form-control" id="exerciseReps" [(ngModel)]="newExercise.reps"
+              name="exerciseReps">
+          </div>
+          <div class="mb-3">
+            <label for="exerciseWeight" class="form-label">Weight ({{_userService.user.unit}})</label>
+            <input type="number" class="form-control" id="exerciseWeight" [(ngModel)]="newExercise.weight"
+              name="exerciseWeight">
+          </div>
+          <div class="mb-3">
+            <label for="exerciseNotes" class="form-label">Notes</label>
+            <textarea class="form-control" id="exerciseNotes" rows="3" [(ngModel)]="newExercise.notes"
+              name="exerciseNotes"></textarea>
+          </div>
+          <div *ngIf="newExercise.type == 'cardio'" class="mb-3">
+            <label for="exerciseDuration" class="form-label">Duration (minutes)</label>
+            <input type="number" class="form-control" id="exerciseDuration" [(ngModel)]="newExercise.duration"
+              name="exerciseDuration">
+          </div>
+          <div *ngIf="newExercise.type == 'cardio'" class="mb-3">
+            <label for="exerciseDistance" class="form-label">Distance (km)</label>
+            <input type="number" class="form-control" id="exerciseDistance" [(ngModel)]="newExercise.distance"
+              name="exerciseDistance">
+          </div>
+          <div class="mb-3">
+            <label for="exerciserpe" class="form-label">RPE</label>
+            <input type="number" class="form-control" id="exerciserpe" [(ngModel)]="newExercise.rpe" name="exerciserpe">
+          </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Add Exercise</button>
+        <button type="button" class="btn btn-primary" (click)="addExercise();" data-bs-dismiss="modal">Add Exercise</button>
       </div>
     </div>
   </div>

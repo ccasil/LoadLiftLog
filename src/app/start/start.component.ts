@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 declare global {
   interface Window {
     bootstrap: any;
@@ -10,7 +11,7 @@ declare global {
 @Component({
   selector: 'app-start',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './start.component.html',
   styleUrl: './start.component.scss'
 })
@@ -31,6 +32,8 @@ export class StartComponent {
   squatGoal: string = '';
   benchGoal: string = '';
   deadliftGoal: string = '';
+  selectedunit: string = '';
+  units: string[] = ['kg', 'lbs'];
   saveDate: string = new Date().getFullYear().toString() +
   String(new Date().getMonth() + 1).padStart(2, '0') +
   String(new Date().getDate()).padStart(2, '0');;
@@ -69,6 +72,19 @@ export class StartComponent {
     }
   }
   saveUser() {
+    this._userService.user = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      currentWeight: '',
+      goalWeight: '',
+      squatGoal: '',
+      benchGoal: '',
+      deadliftGoal: '',
+      savedate: '',
+      unit: '',
+      log: []
+    }
     this._userService.user.firstName = this.firstName;
     this._userService.user.lastName = this.lastName;
     this._userService.user.email = this.email;
@@ -78,6 +94,7 @@ export class StartComponent {
     this._userService.user.benchGoal = this.benchGoal;
     this._userService.user.deadliftGoal = this.deadliftGoal;
     this._userService.user.savedate = this.saveDate;
+    this._userService.user.unit = this.selectedunit;
     this._userService.user.log = [];
     localStorage.setItem('LLLuser', JSON.stringify(this._userService.user));
     const modalElement = this.modalRef.nativeElement;
